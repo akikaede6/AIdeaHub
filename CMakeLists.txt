@@ -11,11 +11,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(OpenSSL REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
+        OpenAIApiClient.h
+        OpenAIApiClient.cpp
+        InputDialog.h
+        InputDialog.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -41,7 +46,10 @@ else()
     endif()
 endif()
 
-target_link_libraries(GPTapi-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(GPTapi-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets OpenSSL::SSL OpenSSL::Crypto)
+
+include_directories(${CMAKE_SOURCE_DIR}/third_party/httplib
+                    ${CMAKE_SOURCE_DIR}/third_party/nlohmann)
 
 set_target_properties(GPTapi-desktop PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
