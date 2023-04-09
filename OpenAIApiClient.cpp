@@ -1,16 +1,26 @@
 #include "OpenAIApiClient.h"
 #include "json.hpp"
+#include <QDebug>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QNetworkProxy>
 
-OpenAIApiClient::OpenAIApiClient(const std::string& api_key) : client(base_url), api_key(api_key)
+OpenAIApiClient::OpenAIApiClient(const std::string& api_key) : api_key(api_key)
 {
-    client.set_proxy(proxy_host.c_str(), proxy_port);
-}
+    manager = new QNetworkAccessManager(this);
+    if (!proxy_host.isEmpty() && proxy_port != 0) {
+        QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxy_host, proxy_port);
+        manager->setProxy(proxy);
+    }}
 
-std::string OpenAIApiClient::generate_text(const std::string& prompt) {
-    httplib::Headers headers = {
-        {"Authorization", "Bearer " + api_key},
-        {"Content-Type", "application/json"},
-    };
+void OpenAIApiClient::generate_text(const std::string& prompt) {
+    QUrl url(base_url + "/v1/completions");
+    QNetworkRequest request(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Authorization", ("Bearer " + api_key).c_str());
 
     nlohmann::json data = {
         {"model", engine},
@@ -18,12 +28,15 @@ std::string OpenAIApiClient::generate_text(const std::string& prompt) {
         {"max_tokens", 100},
     };
 
-    std::cout << data.dump();
-    auto response = client.Post("/v1/completions", headers, data.dump(), "application/json");
-    if (response && response->status == 200) {
-        auto result = nlohmann::json::parse(response->body);
-        return result["choices"][0]["text"].get<std::string>();
-    } else {
-        return "Error: API request failed.";
-    }
+    auto reply = manager->post(request, QByteArray(data.dump().c_str()));
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            auto result = nlohmann::json::parse(reply->readAll().toStdString());
+            emit textGenerated(result["choices"][0]["text"].get<std::string>());
+        } else {
+            emit textGenerated(reply->errorString().toStdString());
+        }
+        reply->deleteLater();
+    });
 }

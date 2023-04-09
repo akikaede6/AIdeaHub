@@ -18,6 +18,7 @@ public:
 
 private slots:
     void on_sendRequestButton_clicked();
+    void onTextGenerated(const std::string& text);
 
 private:
     OpenAIApiClient m_apiClient;

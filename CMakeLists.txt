@@ -9,9 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-find_package(OpenSSL REQUIRED)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -46,10 +45,9 @@ else()
     endif()
 endif()
 
-target_link_libraries(GPTapi-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(GPTapi-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network)
 
-include_directories(${CMAKE_SOURCE_DIR}/third_party/httplib
-                    ${CMAKE_SOURCE_DIR}/third_party/nlohmann)
+include_directories(${CMAKE_SOURCE_DIR}/third_party/nlohmann)
 
 set_target_properties(GPTapi-desktop PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

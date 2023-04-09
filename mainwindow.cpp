@@ -16,6 +16,8 @@ MainWindow::MainWindow(const std::string& api_key, QWidget *parent)
     mainLayout->addWidget(m_sendBtn, 0, Qt::AlignRight);
     connect(m_sendBtn, &QPushButton::clicked, this, &MainWindow::on_sendRequestButton_clicked);
     setCentralWidget(mainWidget);
+
+    connect(&m_apiClient, &OpenAIApiClient::textGenerated, this, &MainWindow::onTextGenerated);
 }
 
 MainWindow::~MainWindow()
@@ -26,7 +28,11 @@ void MainWindow::on_sendRequestButton_clicked() {
     QString prompt = m_sendEdit->text();
     m_textEdit->append("user:");
     m_textEdit->append(m_sendEdit->text());
-    std::string response = m_apiClient.generate_text(prompt.toStdString());
+    m_apiClient.generate_text(prompt.toStdString());
     m_textEdit->append("\nresponds:");
-    m_textEdit->append(QString::fromStdString(response).trimmed());
+}
+
+void MainWindow::onTextGenerated(const std::string &text)
+{
+    m_textEdit->append(QString::fromStdString(text).trimmed());
 }

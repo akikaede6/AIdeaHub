@@ -2,20 +2,24 @@
 #define OPENAIAPICLIENT_H
 
 #include <string>
-#define CPPHTTPLIB_OPENSSL_SUPPORT
-#include <httplib.h>
+#include <QObject>
 
-class OpenAIApiClient
+class QNetworkAccessManager;
+class OpenAIApiClient : public QObject
 {
+    Q_OBJECT
 public:
-    OpenAIApiClient(const std::string& api_key);
-    std::string generate_text(const std::string& prompt);
+    explicit OpenAIApiClient(const std::string& api_key);
+    void generate_text(const std::string& prompt);
+
+signals:
+    void textGenerated(std::string);
 
 private:
-    const std::string base_url = "api.openai.com";
-    const std::string proxy_host = "127.0.0.1";
+    QNetworkAccessManager *manager;
+    const QString base_url = "https://api.openai.com";
+    const QString proxy_host = "127.0.0.1";
     int proxy_port = 7890;
-    httplib::SSLClient client;
     std::string engine = "text-davinci-003";
     std::string api_key;
 };
