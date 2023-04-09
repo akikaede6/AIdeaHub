@@ -9,8 +9,8 @@ class OpenAIApiClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit OpenAIApiClient(const std::string& api_key);
-    void generate_text(const std::string& prompt);
+    explicit OpenAIApiClient(const QString& api_key);
+    void generate_text(const QString &prompt);
 
 signals:
     void textGenerated(std::string);
@@ -20,8 +20,8 @@ private:
     const QString base_url = "https://api.openai.com";
     const QString proxy_host = "127.0.0.1";
     int proxy_port = 7890;
-    std::string engine = "text-davinci-003";
-    std::string api_key;
+    const QString engine = "text-davinci-003";
+    QString api_key;
 };
 
 #endif // OPENAIAPICLIENT_H

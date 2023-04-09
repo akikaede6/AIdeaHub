@@ -13,11 +13,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(const std::string& api_key, QWidget *parent = nullptr);
+    MainWindow(const QString &api_key, QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
-    void on_sendRequestButton_clicked();
+    void onSendBtnClicked();
     void onTextGenerated(const std::string& text);
 
 private:

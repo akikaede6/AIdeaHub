@@ -2,7 +2,7 @@
 
 #include <QVBoxLayout>
 
-MainWindow::MainWindow(const std::string& api_key, QWidget *parent)
+MainWindow::MainWindow(const QString& api_key, QWidget *parent)
     : QMainWindow(parent)
     , m_apiClient(api_key)
     , m_sendBtn(new QPushButton(tr("Send"), this))
@@ -14,7 +14,7 @@ MainWindow::MainWindow(const std::string& api_key, QWidget *parent)
     mainLayout->addWidget(m_textEdit);
     mainLayout->addWidget(m_sendEdit);
     mainLayout->addWidget(m_sendBtn, 0, Qt::AlignRight);
-    connect(m_sendBtn, &QPushButton::clicked, this, &MainWindow::on_sendRequestButton_clicked);
+    connect(m_sendBtn, &QPushButton::clicked, this, &MainWindow::onSendBtnClicked);
     setCentralWidget(mainWidget);
 
     connect(&m_apiClient, &OpenAIApiClient::textGenerated, this, &MainWindow::onTextGenerated);
@@ -24,11 +24,10 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::on_sendRequestButton_clicked() {
-    QString prompt = m_sendEdit->text();
+void MainWindow::onSendBtnClicked() {
     m_textEdit->append("user:");
     m_textEdit->append(m_sendEdit->text());
-    m_apiClient.generate_text(prompt.toStdString());
+    m_apiClient.generate_text(m_sendEdit->text());
     m_textEdit->append("\nresponds:");
 }
 

@@ -1,39 +1,47 @@
 #include "OpenAIApiClient.h"
-#include "json.hpp"
+
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
 #include <QNetworkProxy>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
-OpenAIApiClient::OpenAIApiClient(const std::string& api_key) : api_key(api_key)
+OpenAIApiClient::OpenAIApiClient(const QString &api_key) : api_key(api_key)
 {
     manager = new QNetworkAccessManager(this);
     if (!proxy_host.isEmpty() && proxy_port != 0) {
         QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxy_host, proxy_port);
         manager->setProxy(proxy);
-    }}
+    }
+}
 
-void OpenAIApiClient::generate_text(const std::string& prompt) {
+void OpenAIApiClient::generate_text(const QString& prompt) {
     QUrl url(base_url + "/v1/completions");
     QNetworkRequest request(url);
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("Authorization", ("Bearer " + api_key).c_str());
+    request.setRawHeader("Authorization", QString("Bearer " + api_key).toUtf8());
 
-    nlohmann::json data = {
-        {"model", engine},
-        {"prompt", prompt},
-        {"max_tokens", 100},
-    };
+    QJsonObject jsonObj;
+    jsonObj["model"] = engine;
+    jsonObj["prompt"] = prompt;
+    jsonObj["max_tokens"] = 100;
 
-    auto reply = manager->post(request, QByteArray(data.dump().c_str()));
+    QJsonDocument jsonDoc(jsonObj);
+    auto reply = manager->post(request, jsonDoc.toJson());
 
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         if (reply->error() == QNetworkReply::NoError) {
-            auto result = nlohmann::json::parse(reply->readAll().toStdString());
-            emit textGenerated(result["choices"][0]["text"].get<std::string>());
+            auto jsonResponse = reply->readAll();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonResponse);
+            auto result = jsonDoc.object();
+            auto choices = result["choices"].toArray();
+            auto text = choices[0].toObject()["text"].toString().toStdString();
+            emit textGenerated(text);
         } else {
             emit textGenerated(reply->errorString().toStdString());
         }
