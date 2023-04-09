@@ -13,7 +13,7 @@ public:
     void generate_text(const QString &prompt);
 
 signals:
-    void textGenerated(std::string);
+    void textGenerated(QString);
 
 private:
     QNetworkAccessManager *manager;

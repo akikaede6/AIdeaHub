@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QWebEngineView>
+
 
 class MainWindow : public QMainWindow
 {
@@ -18,12 +20,13 @@ public:
 
 private slots:
     void onSendBtnClicked();
-    void onTextGenerated(const std::string& text);
+    void onTextGenerated(const QString& text);
 
 private:
     OpenAIApiClient m_apiClient;
     QPushButton *m_sendBtn;
     QLineEdit *m_sendEdit;
     QTextEdit *m_textEdit;
+    QWebEngineView *view;
 };
 #endif // MAINWINDOW_H

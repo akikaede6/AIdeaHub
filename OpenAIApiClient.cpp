@@ -17,7 +17,6 @@ const QString projectName = "RiderAI";
 OpenAIApiClient::OpenAIApiClient()
 {
     QFile file(QString("%1/.config/%2/key").arg(QDir::homePath()).arg(projectName));
-    qDebug() << file;
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream stream(&file);
         api_key = stream.readAll().trimmed();
@@ -35,16 +34,19 @@ OpenAIApiClient::OpenAIApiClient()
 }
 
 void OpenAIApiClient::generate_text(const QString& prompt) {
-    QUrl url(base_url + "/v1/completions");
+//    QUrl url(base_url + "/v1/completions");
+    QUrl url(base_url + "/v1/images/generations");
     QNetworkRequest request(url);
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QString("Bearer " + api_key).toUtf8());
 
     QJsonObject jsonObj;
-    jsonObj["model"] = engine;
+//    jsonObj["model"] = engine;
     jsonObj["prompt"] = prompt;
-    jsonObj["max_tokens"] = 100;
+    jsonObj["n"] = 2;
+    jsonObj["size"] = "1024x1024";
+//    jsonObj["max_tokens"] = 100;
 
     QJsonDocument jsonDoc(jsonObj);
     auto reply = manager->post(request, jsonDoc.toJson());
@@ -54,11 +56,15 @@ void OpenAIApiClient::generate_text(const QString& prompt) {
             auto jsonResponse = reply->readAll();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonResponse);
             auto result = jsonDoc.object();
-            auto choices = result["choices"].toArray();
-            auto text = choices[0].toObject()["text"].toString().toStdString();
-            emit textGenerated(text);
+//            auto choices = result["choices"].toArray();
+//            auto text = choices[0].toObject()["text"].toString();
+            auto data = result["data"].toArray();
+            foreach (auto obj, data) {
+                auto text = obj.toObject()["url"].toString();
+                emit textGenerated(text);
+            }
         } else {
-            emit textGenerated(reply->errorString().toStdString());
+            emit textGenerated(reply->errorString());
         }
         reply->deleteLater();
     });

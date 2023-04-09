@@ -8,15 +8,16 @@ MainWindow::MainWindow(QWidget *parent)
     , m_sendBtn(new QPushButton(tr("Send"), this))
     , m_sendEdit(new QLineEdit(this))
     , m_textEdit(new QTextEdit(this))
+    , view(new QWebEngineView())
 {
     QWidget *mainWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout(mainWidget);
     mainLayout->addWidget(m_textEdit);
+//    mainLayout->addWidget(view);
     mainLayout->addWidget(m_sendEdit);
     mainLayout->addWidget(m_sendBtn, 0, Qt::AlignRight);
     connect(m_sendBtn, &QPushButton::clicked, this, &MainWindow::onSendBtnClicked);
     setCentralWidget(mainWidget);
-
     connect(&m_apiClient, &OpenAIApiClient::textGenerated, this, &MainWindow::onTextGenerated);
 }
 
@@ -31,7 +32,10 @@ void MainWindow::onSendBtnClicked() {
     m_textEdit->append("\nresponds:");
 }
 
-void MainWindow::onTextGenerated(const std::string &text)
+void MainWindow::onTextGenerated(const QString &text)
 {
-    m_textEdit->append(QString::fromStdString(text).trimmed());
+    m_textEdit->append(text.trimmed());
+
+    view->setUrl(QUrl(text));
+    view->show();
 }
