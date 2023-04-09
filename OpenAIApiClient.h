@@ -9,7 +9,7 @@ class OpenAIApiClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit OpenAIApiClient(const QString& api_key);
+    explicit OpenAIApiClient();
     void generate_text(const QString &prompt);
 
 signals:

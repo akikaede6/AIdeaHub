@@ -2,9 +2,9 @@
 
 #include <QVBoxLayout>
 
-MainWindow::MainWindow(const QString& api_key, QWidget *parent)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , m_apiClient(api_key)
+    , m_apiClient()
     , m_sendBtn(new QPushButton(tr("Send"), this))
     , m_sendEdit(new QLineEdit(this))
     , m_textEdit(new QTextEdit(this))

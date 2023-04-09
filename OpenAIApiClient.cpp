@@ -9,9 +9,24 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QFile>
+#include <QDir>
 
-OpenAIApiClient::OpenAIApiClient(const QString &api_key) : api_key(api_key)
+const QString projectName = "RiderAI";
+
+OpenAIApiClient::OpenAIApiClient()
 {
+    QFile file(QString("%1/.config/%2/key").arg(QDir::homePath()).arg(projectName));
+    qDebug() << file;
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream stream(&file);
+        api_key = stream.readAll().trimmed();
+        qDebug() << api_key;
+        file.close();
+    } else {
+        qDebug() << "Error: could not read API key file";
+    }
+
     manager = new QNetworkAccessManager(this);
     if (!proxy_host.isEmpty() && proxy_port != 0) {
         QNetworkProxy proxy(QNetworkProxy::HttpProxy, proxy_host, proxy_port);
