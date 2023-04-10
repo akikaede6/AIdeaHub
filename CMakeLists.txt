@@ -14,12 +14,22 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network WebEngine
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        OpenAIApiClient.h
-        OpenAIApiClient.cpp
-        InputDialog.h
-        InputDialog.cpp
+        UI/mainwindow.cpp
+        UI/mainwindow.h
+        UI/InputDialog.h
+        UI/InputDialog.cpp
+        UI/ChatWidget.h
+        UI/ChatWidget.cpp
+        UI/ImageWidget.h
+        UI/ImageWidget.cpp
+        OpenAIClient/OpenAIClientFactory.h
+        OpenAIClient/OpenAIClientFactory.cpp
+        OpenAIClient/OpenAIApiClient.h
+        OpenAIClient/OpenAIApiClient.cpp
+        OpenAIClient/OpenAIChatClient.h
+        OpenAIClient/OpenAIChatClient.cpp
+        OpenAIClient/OpenAIImageClient.h
+        OpenAIClient/OpenAIImageClient.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -54,6 +64,8 @@ set_target_properties(GPTapi-desktop PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
+
+include_directories(${CMAKE_SOURCE_DIR})
 
 install(TARGETS GPTapi-desktop
     BUNDLE DESTINATION .
