@@ -14,7 +14,7 @@ void OpenAIImageClient::generate_respond(const QString &prompt)
 
     QJsonObject jsonObj;
     jsonObj["prompt"] = prompt;
-    jsonObj["n"] = 2;
+    jsonObj["n"] = 1;
     jsonObj["size"] = "1024x1024";
 
     QJsonDocument jsonDoc(jsonObj);

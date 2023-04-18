@@ -7,6 +7,7 @@
 class QPushButton;
 class QLineEdit;
 class OpenAIImageClient;
+class QNetworkAccessManager;
 class ImageWidget : public QWidget
 {
     Q_OBJECT
@@ -22,12 +23,14 @@ private:
 private slots:
     void onSendBtnClicked();
     void onTextGenerated(const QString& text);
+    void onDownloadTriggered(bool triggered);
 
 private:
     QWebEngineView *m_view;
     QPushButton *m_sendBtn;
     QLineEdit *m_sendEdit;
     OpenAIImageClient *m_apiClient;
+    QAction *m_downloadAction;
 };
 
 #endif // IMAGEWIDGET_H
