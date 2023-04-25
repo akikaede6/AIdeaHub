@@ -17,6 +17,12 @@ ChatWidget::ChatWidget(QWidget *parent)
     initConnection();
 }
 
+ChatWidget::~ChatWidget()
+{
+    m_thread.quit();
+    m_thread.wait();
+}
+
 void ChatWidget::init()
 {
     QVBoxLayout *chatLayout = new QVBoxLayout(this);
@@ -24,6 +30,8 @@ void ChatWidget::init()
     chatLayout->addWidget(m_textEdit);
     chatLayout->addWidget(m_sendEdit);
     chatLayout->addWidget(m_sendBtn, 0, Qt::AlignRight);
+    m_apiClient->moveToThread(&m_thread);
+    m_thread.start();
 }
 
 void ChatWidget::initConnection()
@@ -34,10 +42,11 @@ void ChatWidget::initConnection()
 
 void ChatWidget::onSendBtnClicked()
 {
-    m_textEdit->append("user:");
+    m_textEdit->append("\nuser:");
     m_textEdit->append(m_sendEdit->text());
     m_apiClient->generate_respond(m_sendEdit->text());
     m_textEdit->append("\nresponds:");
+    m_sendEdit->clear();
 }
 
 void ChatWidget::onTextGenerated(const QString &text)

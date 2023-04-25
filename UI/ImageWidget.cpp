@@ -21,6 +21,12 @@ ImageWidget::ImageWidget(QWidget *parent)
     initConnection();
 }
 
+ImageWidget::~ImageWidget()
+{
+    m_thread.quit();
+    m_thread.wait();
+}
+
 void ImageWidget::init()
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -33,6 +39,9 @@ void ImageWidget::init()
     m_downloadAction->setIconVisibleInMenu(true);
     m_downloadAction->setText(tr("Download"));
     m_view->addAction(m_downloadAction);
+
+    m_apiClient->moveToThread(&m_thread);
+    m_thread.start();
 }
 
 void ImageWidget::initConnection()

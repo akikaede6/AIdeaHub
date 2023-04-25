@@ -1,8 +1,9 @@
 #ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
 
-#include "qwebengineview.h"
+#include <QWebEngineView>
 #include <QWidget>
+#include <QThread>
 
 class QPushButton;
 class QLineEdit;
@@ -13,6 +14,7 @@ class ImageWidget : public QWidget
     Q_OBJECT
 public:
     explicit ImageWidget(QWidget *parent = nullptr);
+    ~ImageWidget();
 
 signals:
 
@@ -31,6 +33,7 @@ private:
     QLineEdit *m_sendEdit;
     OpenAIImageClient *m_apiClient;
     QAction *m_downloadAction;
+    QThread m_thread;
 };
 
 #endif // IMAGEWIDGET_H

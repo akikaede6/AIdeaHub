@@ -2,6 +2,7 @@
 #define CHATWIDGET_H
 
 #include <QWidget>
+#include <QThread>
 
 class QPushButton;
 class QTextEdit;
@@ -12,6 +13,7 @@ class ChatWidget : public QWidget
     Q_OBJECT
 public:
     explicit ChatWidget(QWidget *parent = nullptr);
+    ~ChatWidget();
 
 signals:
 
@@ -28,6 +30,7 @@ private:
     QPushButton *m_sendBtn;
     QLineEdit *m_sendEdit;
     QTextEdit *m_textEdit;
+    QThread m_thread;
 };
 
 #endif // CHATWIDGET_H
