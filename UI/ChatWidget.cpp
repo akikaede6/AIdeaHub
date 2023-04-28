@@ -38,6 +38,7 @@ void ChatWidget::initConnection()
 {
     connect(m_sendBtn, &QPushButton::clicked, this, &ChatWidget::onSendBtnClicked);
     connect(m_apiClient, &OpenAIApiClient::textGenerated, this, &ChatWidget::onTextGenerated);
+    connect(m_sendEdit, &QLineEdit::editingFinished, this, &ChatWidget::onSendBtnClicked);
 }
 
 void ChatWidget::onSendBtnClicked()

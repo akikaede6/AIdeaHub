@@ -49,6 +49,7 @@ void ImageWidget::initConnection()
     connect(m_sendBtn, &QPushButton::clicked, this, &ImageWidget::onSendBtnClicked);
     connect(m_apiClient, &OpenAIImageClient::textGenerated, this, &ImageWidget::onTextGenerated);
     connect(m_downloadAction, &QAction::triggered, this, &ImageWidget::onDownloadTriggered);
+    connect(m_sendEdit, &QLineEdit::editingFinished, this, &ImageWidget::onSendBtnClicked);
 }
 
 void ImageWidget::onSendBtnClicked()
