@@ -30,6 +30,8 @@ set(PROJECT_SOURCES
         OpenAIClient/OpenAIChatClient.cpp
         OpenAIClient/OpenAIImageClient.h
         OpenAIClient/OpenAIImageClient.cpp
+        FileSystem/ChatLogger.h
+        FileSystem/ChatLogger.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

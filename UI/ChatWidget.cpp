@@ -43,14 +43,18 @@ void ChatWidget::initConnection()
 
 void ChatWidget::onSendBtnClicked()
 {
-    m_textEdit->append("user:");
+    m_textEdit->append("You:");
+    m_logger.log("You:");
     m_textEdit->append(m_sendEdit->text());
+    m_logger.log(m_sendEdit->text());
     m_apiClient->generate_respond(m_sendEdit->text());
-    m_textEdit->append("responds:");
+    m_textEdit->append("AI:");
+    m_logger.log("AI:");
     m_sendEdit->clear();
 }
 
 void ChatWidget::onTextGenerated(const QString &text)
 {
     m_textEdit->append(QString("%1\n").arg(text.trimmed()));
+    m_logger.log(QString("%1\n").arg(text.trimmed()));
 }

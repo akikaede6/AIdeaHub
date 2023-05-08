@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QThread>
 
+#include "FileSystem/ChatLogger.h"
+
 class QPushButton;
 class QTextEdit;
 class QLineEdit;
@@ -31,6 +33,7 @@ private:
     QLineEdit *m_sendEdit;
     QTextEdit *m_textEdit;
     QThread m_thread;
+    ChatLogger m_logger;
 };
 
 #endif // CHATWIDGET_H
