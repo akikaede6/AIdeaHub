@@ -38,19 +38,19 @@ void ChatWidget::initConnection()
 {
     connect(m_sendBtn, &QPushButton::clicked, this, &ChatWidget::onSendBtnClicked);
     connect(m_apiClient, &OpenAIApiClient::textGenerated, this, &ChatWidget::onTextGenerated);
-    connect(m_sendEdit, &QLineEdit::editingFinished, this, &ChatWidget::onSendBtnClicked);
+    connect(m_sendEdit, &QLineEdit::returnPressed, this, &ChatWidget::onSendBtnClicked);
 }
 
 void ChatWidget::onSendBtnClicked()
 {
-    m_textEdit->append("\nuser:");
+    m_textEdit->append("user:");
     m_textEdit->append(m_sendEdit->text());
     m_apiClient->generate_respond(m_sendEdit->text());
-    m_textEdit->append("\nresponds:");
+    m_textEdit->append("responds:");
     m_sendEdit->clear();
 }
 
 void ChatWidget::onTextGenerated(const QString &text)
 {
-    m_textEdit->append(text.trimmed());
+    m_textEdit->append(QString("%1\n").arg(text.trimmed()));
 }
